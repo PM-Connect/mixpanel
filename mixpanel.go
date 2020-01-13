@@ -131,8 +131,7 @@ func (m *mixpanel) Track(distinctId, eventName string, e *Event) error {
 // Import create an event for an existing distinct id, even if the event is older than 5 days.
 // See https://developer.mixpanel.com/docs/importing-old-events
 func (m *mixpanel) Import(distinctId, eventName string, e *Event) error {
-	fiveDaysAgo := time.Now().Add(-5 * 24 * time.Hour)
-	if !(e.Timestamp != nil && e.Timestamp.Before(fiveDaysAgo)) {
+	if time.Since(*e.Timestamp) < 5 * 24 * time.Hour {
 		return m.Track(distinctId, eventName, e)
 	}
 
